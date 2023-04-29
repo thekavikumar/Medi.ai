@@ -5,6 +5,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { Route, Routes } from "react-router-dom";
 import PatientHome from "./components/PatientHome";
 import HospitalHome from "./components/HospitalHome";
+import HosNav from "./components/HosNav";
 
 function App() {
   const { currentUser, getData, userData } = useAuth();
