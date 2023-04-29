@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function PatientHome() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -19,12 +19,12 @@ function Dashboard() {
   };
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>Patient Dashboard</h1>
       <h2>{currentUser.email}</h2>
       <button onClick={handleLogout}>LogOut</button>
-      <Toaster />
+      <Toaster position="top-center" />
     </div>
   );
 }
 
-export default Dashboard;
+export default PatientHome;

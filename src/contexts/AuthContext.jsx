@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 
 const AuthContext = React.createContext();
@@ -16,6 +16,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = React.useState();
+  const [userData, setUserData] = React.useState();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
 
@@ -67,10 +68,24 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  const getData = async () => {
+    const docRef = doc(db, "users", `${currentUser.email}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      //console.log("Document data:", docSnap.data());
+      setUserData(docSnap.data());
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  };
+
   const value = {
     currentUser,
     signUpUser,
     login,
+    getData,
+    userData,
   };
   return (
     <AuthContext.Provider value={value}>
