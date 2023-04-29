@@ -42,6 +42,18 @@ export function AuthProvider({ children }) {
       });
   };
 
+  const handleLogout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigate("/");
+        toast.success("Logged out successfully");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
   const login = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -86,6 +98,7 @@ export function AuthProvider({ children }) {
     login,
     getData,
     userData,
+    handleLogout,
   };
   return (
     <AuthContext.Provider value={value}>
