@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
+import HosNav from "./HosNav";
 
 function HospitalHome() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function HospitalHome() {
   };
   return (
     <div>
+      <HosNav />
       <h1>Hospital Dashboard</h1>
       <h2>{currentUser.email}</h2>
       <button onClick={handleLogout}>LogOut</button>
