@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom/dist";
 import { useAuth } from "../contexts/AuthContext";
 
-function HosNav() {
+function PatNav() {
   const { handleLogout } = useAuth();
 
   return (
@@ -24,7 +24,7 @@ function HosNav() {
           Payment Status
         </Link>
         <Link
-          to="/hosProfile"
+          to="/patProfile"
           className="hover:text-[#03C988] duration-200 transition-all"
         >
           Profile
@@ -46,4 +46,4 @@ function HosNav() {
   );
 }
 
-export default HosNav;
+export default PatNav;

@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import PatNav from "./PatNav";
+import Appointments from "./patient/Appointments";
 
 function PatientHome() {
   const { currentUser } = useAuth();
@@ -20,9 +22,8 @@ function PatientHome() {
 
   return (
     <div>
-      <h1>Patient Dashboard</h1>
-      <h2>{currentUser.email}</h2>
-      <button onClick={handleLogout}>LogOut</button>
+      <PatNav />
+      <Appointments />
       <Toaster position="top-center" />
     </div>
   );

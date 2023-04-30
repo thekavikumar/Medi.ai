@@ -1,79 +1,95 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import PatNav from "../PatNav";
 import Select from "react-select";
-import { Toaster, toast } from "react-hot-toast";
-import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { useAuth } from "../../contexts/AuthContext";
+import dayjs from "dayjs";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-function SignUp() {
+function Book() {
+  const { getData, userData } = useAuth();
+  const [data, setData] = React.useState(null);
+  React.useEffect(() => {
+    getData();
+    if (userData) {
+      setData(userData);
+    }
+  }, []);
   const [loading, setLoading] = React.useState(false);
-  const options = [
-    { value: "hospital", label: "Hospital" },
-    { value: "patient", label: "Patient" },
-  ];
-  const [userType, setUserType] = React.useState("");
   const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [password_confirmation, setPasswordConfirmation] = React.useState("");
-  const { signUpUser, currentUser } = useAuth();
-
+  const [email, setEmail] = React.useState("");
+  const [value, setValue] = React.useState(dayjs("2018-01-01T00:00:00.000Z"));
+  const [issues, setIssues] = React.useState("");
+  //   console.log(value.$d);
+  const options = [
+    { value: "appolo", label: "Appolo" },
+    { value: "amar hospital", label: "Amar Hospital" },
+    { value: "government hospital", label: "Government Hospital" },
+  ];
+  const [hospital, setHospital] = React.useState("");
   const handleChange = (options) => {
-    setUserType(options);
+    setHospital(options);
   };
-
-  const handleSubmit = async (e) => {
+  React.useEffect(() => {
+    if (data) {
+      setName(data.name);
+      setPhone(data.phone);
+      setEmail(data.email);
+    }
+  }, [data]);
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     const formData = {
       name: name,
       email: email,
       phone: phone,
-      userType: userType.value,
-      password: password,
+      hospital: hospital.value,
+      issues: issues,
+      date: value.$d,
     };
     console.log(formData);
-
-    if (email === "" || password === "" || phone === "" || name === "") {
-      toast.error("Please fill all the fields");
-      setLoading(false);
-      return;
-    }
-
-    if (password !== password_confirmation) {
-      toast.error("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    signUpUser(email, password, formData);
   };
-
   return (
-    <div className="flex bg-slate-50 p-20 items-center justify-center h-screen">
-      <form onSubmit={handleSubmit} className="w-full md:max-w-md">
+    <div>
+      <PatNav />
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:max-w-md mx-auto
+      mt-8"
+      >
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl text-center md:text-4xl font-bold text-gray-800">
-            Sign Up
+            Book Appointment
           </h1>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              name="name"
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              id="name"
-              className="border border-gray-300 rounded-md p-2"
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="userType">Type Of User</label>
-            <Select
-              value={userType}
-              options={options}
-              onChange={handleChange}
-            />
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                id="name"
+                className="border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="phone">Phone Number</label>
+              <input
+                type="number"
+                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter your phone number"
+                id="phone"
+                className="border border-gray-300 rounded-md p-2"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
@@ -81,45 +97,42 @@ function SignUp() {
               type="email"
               placeholder="Enter your email"
               name="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               id="email"
               className="border border-gray-300 rounded-md p-2"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-              id="password"
-              className="border border-gray-300 rounded-md p-2"
+            <label>Hospital</label>
+            <Select
+              value={hospital}
+              options={options}
+              onChange={handleChange}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="password_confirmation">Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              name="password_confirmation"
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              id="password_confirmation"
-              className="border border-gray-300 rounded-md p-2"
-            />
+            <label>Select Slot</label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                className="border border-gray-300 rounded-md p-2"
+                value={value}
+                onChange={(newValue) => setValue(newValue)}
+              />
+            </LocalizationProvider>
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="number"
-              name="phone"
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter your phone number"
-              id="phone"
+            <label htmlFor="phone">Issues Faced</label>
+            <textarea
+              type="text"
+              name="issues"
+              value={issues}
+              onChange={(e) => setIssues(e.target.value)}
+              placeholder="Enter your issues here"
+              id="issues"
               className="border border-gray-300 rounded-md p-2"
             />
           </div>
-
           <div className="flex items-center justify-evenly gap-4 w-full">
             <button
               type="submit"
@@ -144,7 +157,7 @@ function SignUp() {
                   />
                 </svg>
               )}
-              Sign Up
+              Book Appointment
             </button>
             <Link to={"/"} className=" w-full">
               <button className=" w-full text-gray-900 rounded-md p-2 hover:text-white border-2 border-[#03C988]  hover:bg-[#03C988]">
@@ -159,4 +172,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Book;

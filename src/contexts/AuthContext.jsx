@@ -92,6 +92,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const bookAppointment = async (formData) => {
+    const docRef = await setDoc(
+      doc(db, `appointments`, `${formData.hospital}`),
+      formData
+    );
+    toast.success("Appointment booked successfully");
+    navigate("/");
+  };
+
   const value = {
     currentUser,
     signUpUser,
@@ -99,6 +108,7 @@ export function AuthProvider({ children }) {
     getData,
     userData,
     handleLogout,
+    bookAppointment,
   };
   return (
     <AuthContext.Provider value={value}>
